@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 function Contact() {
     const [formData, setFormData] = useState({
         name: "",
@@ -9,6 +11,7 @@ function Contact() {
 
     const [errors, setErrors] = useState({});
     const [status, setStatus] = useState("idle");
+    const [serverMessage, setServerMessage] = useState("");
 
     function handleChange(event) {
         const { name, value } = event.target;
@@ -39,11 +42,13 @@ function Contact() {
         return nextErrors;
     }
 
-    function handleSubmit(event) {
+    async function handleSubmit(event) {
         event.preventDefault();
 
         const validationErrors = validate();
+
         setErrors(validationErrors);
+        setServerMessage("");
 
         if (Object.keys(validationErrors).length > 0) {
             return;
@@ -51,12 +56,60 @@ function Contact() {
 
         setStatus("sending");
 
-        // No backend wired up yet — simulating a send.
-        // Swap this out for a real API call / email service later.
-        setTimeout(() => {
+        try {
+            const response = await fetch(
+                `${API_URL}/api/contact`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(formData)
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    data.error || "Unable to send your message."
+                );
+            }
+
             setStatus("sent");
-            setFormData({ name: "", email: "", message: "" });
-        }, 1000);
+            setFormData({
+                name: "",
+                email: "",
+                message: ""
+            });
+            setErrors({});
+            setServerMessage(data.message);
+        } catch (error) {
+            setStatus("error");
+            setServerMessage(
+                error.message ||
+                "Unable to send your message. Please try again."
+            );
+        }
+    }
+
+    if (status === "sent") {
+        return (
+            <main>
+                <section id="contact">
+                    <div className="container">
+                        <h2>Contact</h2>
+
+                        <article>
+                            <p>
+                                {serverMessage ||
+                                    "Thanks for reaching out! Your message has been sent."}
+                            </p>
+                        </article>
+                    </div>
+                </section>
+            </main>
+        );
     }
 
     return (
@@ -69,67 +122,68 @@ function Contact() {
                         Have an idea, question, or opportunity? Get in touch.
                     </p>
 
-                    {status === "sent" ? (
-                        <article>
-                            <p>
-                                Thanks for reaching out! Your message has
-                                been sent — I'll get back to you soon.
-                            </p>
-                        </article>
-                    ) : (
-                        <form onSubmit={handleSubmit} noValidate>
-                            <div>
-                                <label htmlFor="name">Name</label>
-
-                                <input
-                                    type="text"
-                                    id="name"
-                                    name="name"
-                                    value={formData.name}
-                                    onChange={handleChange}
-                                />
-
-                                {errors.name && <p>{errors.name}</p>}
-                            </div>
-
-                            <div>
-                                <label htmlFor="email">Email</label>
-
-                                <input
-                                    type="email"
-                                    id="email"
-                                    name="email"
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                />
-
-                                {errors.email && <p>{errors.email}</p>}
-                            </div>
-
-                            <div>
-                                <label htmlFor="message">Message</label>
-
-                                <textarea
-                                    id="message"
-                                    name="message"
-                                    rows="6"
-                                    value={formData.message}
-                                    onChange={handleChange}
-                                />
-
-                                {errors.message && <p>{errors.message}</p>}
-                            </div>
-
-                            <button
-                                type="submit"
-                                disabled={status === "sending"}
-                            >
-                                {status === "sending"
-                                    ? "Sending..."
-                                    : "Send Message"}
-                            </button>
-                        </form>
+                    {status === "error" && (
+                        <p>{serverMessage}</p>
                     )}
+
+                    <form onSubmit={handleSubmit} noValidate>
+                        <div>
+                            <label htmlFor="name">Name</label>
+
+                            <input
+                                type="text"
+                                id="name"
+                                name="name"
+                                value={formData.name}
+                                onChange={handleChange}
+                            />
+
+                            {errors.name && (
+                                <p>{errors.name}</p>
+                            )}
+                        </div>
+
+                        <div>
+                            <label htmlFor="email">Email</label>
+
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                value={formData.email}
+                                onChange={handleChange}
+                            />
+
+                            {errors.email && (
+                                <p>{errors.email}</p>
+                            )}
+                        </div>
+
+                        <div>
+                            <label htmlFor="message">Message</label>
+
+                            <textarea
+                                id="message"
+                                name="message"
+                                rows="6"
+                                value={formData.message}
+                                onChange={handleChange}
+                            />
+
+                            {errors.message && (
+                                <p>{errors.message}</p>
+                            )}
+                        </div>
+
+                        <button
+                            type="submit"
+                            disabled={status === "sending"}
+                        >
+                            {status === "sending"
+                                ? "Sending..."
+                                : "Send Message"}
+                        </button>
+                    </form>
                 </div>
             </section>
         </main>

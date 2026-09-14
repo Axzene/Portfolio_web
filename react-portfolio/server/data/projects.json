@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "title": "DevPulse",
+    "description": "GitHub developer analytics dashboard built with Next.js.",
+    "details": "A developer analytics dashboard that explores GitHub activity and presents useful development insights.",
+    "techStack": [
+      "Next.js",
+      "PostgreSQL",
+      "Prisma",
+      "NextAuth.js"
+    ],
+    "image": null,
+    "link": "https://github.com/Axzene"
+  },
+  {
+    "id": 2,
+    "title": "Monte Carlo Risk Engine",
+    "description": "Financial risk analysis engine using Monte Carlo simulation.",
+    "details": "A financial risk analysis project that uses Monte Carlo simulation to model uncertainty and estimate potential outcomes.",
+    "techStack": [
+      "Python",
+      "NumPy",
+      "Yahoo Finance"
+    ],
+    "image": null,
+    "link": "https://github.com/Axzene"
+  },
+  {
+    "id": 3,
+    "title": "Portfolio Website",
+    "description": "Responsive personal portfolio built using HTML, CSS and React.",
+    "details": "A responsive personal portfolio website demonstrating frontend development, React components, routing and responsive design.",
+    "techStack": [
+      "HTML",
+      "CSS",
+      "React"
+    ],
+    "image": null,
+    "link": "https://github.com/Axzene"
+  }
+]

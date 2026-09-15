@@ -167,3 +167,5 @@ Notes
 Unknown routes return { "error": "Route not found" } with a 404.
 CORS is locked to the origin set in ALLOWED_ORIGIN, so only the frontend dev server can hit the API locally.
 .env files aren't committed — only the .env.example files are, so anyone else pulling the repo knows what to set up.
+
+The link to the demo video : https://drive.google.com/file/d/1xBvbepM_LZzzSzZb5YU2AypaakSVp7Uq/view?usp=sharing
